@@ -40,12 +40,12 @@ def build_model(pca_matrix, query_shape, batch_size, delta=16):
         ),
     ])
 
-def run_model(model, query, batch_size, threshold=0):
+def run_model(model, queries_matrix, batch_size, threshold=0):
     """Run the convolution model.
         model: result of build_model
-        query: 2D array
+        queries_matrix: 3D array of 2D queries
         batch_size: int
         threshold: float
     """
-     conv_result = model.predict(query, batch_size=batch_size)
+     conv_result = model.predict(queries_matrix, batch_size=batch_size)
      return np.where(conv_result > threshold, 1, 0)
