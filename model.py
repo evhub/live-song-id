@@ -47,5 +47,5 @@ def run_model(model, queries_matrix, batch_size, threshold=0):
         batch_size: int
         threshold: float
     """
-     conv_result = model.predict(queries_matrix, batch_size=batch_size)
-     return np.where(conv_result > threshold, 1, 0)
+    conv_result = model.predict(queries_matrix, batch_size=batch_size)
+    return np.where(conv_result > threshold, 1, 0)
