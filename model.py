@@ -27,10 +27,9 @@ def build_model(pca_matrix, query_shape, delta=16):
     delta_vec = np.zeros(delta+1)
     delta_vec[0] = 1
     delta_vec[-1] = -1
-
+ 
     delta_width, = delta_vec.shape
     delta_matrix = delta_vec.reshape((delta_width, 1))
-
     delta_ker = np.stack([delta_matrix for i in range(num_pca)], axis=-1)
     delta_ker = delta_ker.reshape(delta_ker.shape + (1,))
     def delta_ker_init(shape, dtype=None):
@@ -46,13 +45,13 @@ def build_model(pca_matrix, query_shape, delta=16):
             use_bias=False,
             padding="valid",
         ),
-        Conv2D(
-            filters=1,
-            kernel_size=(delta_width, 1),
-            kernel_initializer=delta_ker_init,
-            use_bias=False,
-            padding="valid",
-        ),
+        # Conv2D(
+        #     filters=1,
+        #     kernel_size=(delta_width, 1),
+        #     kernel_initializer=delta_ker_init,
+        #     use_bias=False,
+        #     padding="valid",
+        # ),
     ])
 
 
@@ -70,6 +69,8 @@ def run_model(model, queries_matrix, threshold=0):
         batch_size=batch_size,
     )
 
+    return np.squeeze(conv_result)
+
     assert conv_result.shape[:2] == (batch_size, 1), (conv_result.shape[:2], (batch_size, 1))
     assert conv_result.shape[3:] == (1,), (conv_result.shape[3:], (1,))
     conv_result = conv_result.reshape((batch_size, conv_result.shape[2]))
@@ -78,12 +79,12 @@ def run_model(model, queries_matrix, threshold=0):
 
 
 if __name__ == "__main__":
-    delta = 1
-    num_pca = 5
-    pca_time = 4
-    pca_height = 10
-    query_time = 8
-    batch_size = 6
+    delta = 16
+    num_pca = 64
+    pca_time = 20
+    pca_height = 121
+    query_time = 1000
+    batch_size = 9
 
     pca_matrix = np.ones((num_pca, pca_time, pca_height))
     query_shape = (query_time, pca_height)
