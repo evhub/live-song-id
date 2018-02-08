@@ -4,7 +4,7 @@ import numpy as np
 def get_allpaths(artist, listdir, file_type='ref'):
     # Get names of all wav files
     file_paths = []
-    f = open(listdir+artist+"_reftoname.txt", 'r')
+    f = open(listdir+artist+'_%stoname.txt'%file_type, 'r')
     for line in f:
         filename = (line.split('_'))[0]
         file_paths.append(artist+'_'+file_type+line.split('_')[0])
