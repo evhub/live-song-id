@@ -31,8 +31,7 @@ def search(query, refs):
 
     output: an array containing sorted by the score.
     """
-    # TODO: DEPRECATED Initialization
-    #bestDistance, bestRefIdx, bestPitch = np.inf, 0, 0
+    # Initialization
     output = []
     
     for refIdx, ref in enumerate(refs):
@@ -46,17 +45,11 @@ def search(query, refs):
         # Obtain the minimum distance from multiple versions
         bestRefPitch, bestRefDistance = min(distances, key=lambda x: x[1])
 
-        # TODO: DEPRECATED: Update the distance
-        #if bestRefDistance < bestDistance:
-        #    bestDistance = bestRefDistance
-        #    bestRefIdx = refIdx
-        #    bestPitch = bestRefPitch
-        output.append((bestRefDistance, bestRefPitch))
+        # Add score for each ref to the output array
+        output.append((refIdx, bestRefDistance, bestRefPitch))
 
-    return output
-
-    # TODO: DEPRECATED
-    # return (bestDistance, bestRefIdx, bestPitch
+    # Sort an output array based on distance
+    return sorted(output, key=lambda x: x[1]) 
 
 def calculateMRR(queries, refs, groundTruth):
     """
