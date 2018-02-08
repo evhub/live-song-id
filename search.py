@@ -15,7 +15,7 @@ def compare(queryFeatures, refFeatures):
     for i in range(n - k):
         startCol = i
         endCol   = startCol + k - 1
-        distance = scipy.spatial.distance.hamming(np.flatten(queryFeatures), np.flatten(refFeatures[:,startCol:endCol+1]))
+        distance = scipy.spatial.distance.hamming(queryFeatures.flatten(), refFeatures[:,startCol:endCol+1].flatten())
         if distance < bestDistance:
             bestDistance = distance
             bestIndex = i
