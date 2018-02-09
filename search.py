@@ -15,7 +15,7 @@ def compare(queryFeatures, refFeatures):
     for i in range(n - k):
         startCol = i
         endCol   = startCol + k - 1
-        distance = scipy.spatial.distance.hamming(queryFeatures.flatten(), refFeatures[:,startCol:endCol+1].flatten())
+        distance = np.count_nonzero(queryFeatures != refFeatures[:,startCol:endCol+1])
         if distance < bestDistance:
             bestDistance = distance
             bestIndex = i
@@ -41,7 +41,7 @@ def search(query, refs):
         for pitch, refPitch in enumerate(ref):
             distance, _ = compare(query, refPitch)
             distances.append((pitch, distance))
-
+        
         # Obtain the minimum distance from multiple versions
         bestRefPitch, bestRefDistance = min(distances, key=lambda x: x[1])
 
@@ -59,6 +59,7 @@ def calculateMRR(queries, refs, groundTruth):
     """
     MRR = 0
     for id_query, query in enumerate(queries):
+        print("Search query {:}".format(id_query))        
         searchResult = search(query, refs)
         rank = 0
         for id_result, result in enumerate(searchResult):
