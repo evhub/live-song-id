@@ -66,5 +66,5 @@ def calculateMRR(queries, refs, groundTruth):
             if result[0] == groundTruth[id_query]:
                 rank = id_result
                 break
-        MRR += 1.0 / rank
+        MRR += 1.0 / (rank+1)
     return MRR / len(queries)
