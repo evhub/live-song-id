@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.spatial
+import time
 
 def compare(queryFeatures, refFeatures):
     """
@@ -59,7 +60,8 @@ def calculateMRR(queries, refs, groundTruth):
     """
     MRR = 0
     for id_query, query in enumerate(queries):
-        print("Search query {:}".format(id_query))        
+        print("==> Searching query {:}".format(id_query))    
+        t_start = time.time()
         searchResult = search(query, refs)
         rank = 0
         for id_result, result in enumerate(searchResult):
@@ -67,4 +69,6 @@ def calculateMRR(queries, refs, groundTruth):
                 rank = id_result
                 break
         MRR += 1.0 / (rank+1)
+        t_end = time.time()
+        print('\t-- Time elapsed: %d seconds'%(t_end - t_start))
     return MRR / len(queries)
