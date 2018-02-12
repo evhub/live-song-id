@@ -65,10 +65,11 @@ def calculateMRR(queries, refs, groundTruth):
         searchResult = search(query, refs)
         rank = 0
         for id_result, result in enumerate(searchResult):
-            if result[0] == groundTruth[id_query]:
-                rank = id_result
+            # Note that groundTruth[id_query] starts from 1
+            if result[0] + 1 == groundTruth[id_query]:
+                rank = id_result + 1
                 break
-        MRR += 1.0 / (rank+1)
+        MRR += 1.0 / rank
         t_end = time.time()
         print('\t-- Time elapsed: %d seconds'%(t_end - t_start))
     return MRR / len(queries)
