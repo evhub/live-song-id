@@ -7,7 +7,12 @@ from keras.models import Sequential
 from keras.layers import Conv2D
 
 
-def build_model(pca_matrix, query_shape, delta=16):
+# Determine how much processing should be done here.
+COMPUTE_DELTA = False
+CAST_TO_BINARY = False
+
+
+def build_model(pca_matrix, query_shape, stride=5, delta=16):
     """Generate the convolution model.
         pca_matrix: 3D array (each 2D subarray is a kernel)
         query_shape: tuple
@@ -24,17 +29,18 @@ def build_model(pca_matrix, query_shape, delta=16):
         assert pca_ker.shape == shape, (pca_ker.shape, shape)
         return pca_ker
 
-    delta_vec = np.zeros(delta+1)
-    delta_vec[0] = 1
-    delta_vec[-1] = -1
- 
-    delta_width, = delta_vec.shape
-    delta_matrix = delta_vec.reshape((delta_width, 1))
-    delta_ker = np.stack([delta_matrix for i in range(num_pca)], axis=-1)
-    delta_ker = delta_ker.reshape(delta_ker.shape + (1,))
-    def delta_ker_init(shape, dtype=None):
-        assert delta_ker.shape == shape, (delta_ker.shape, shape)
-        return delta_ker
+    if COMPUTE_DELTA:
+        delta_vec = np.zeros(delta+1)
+        delta_vec[0] = 1
+        delta_vec[-1] = -1
+
+        delta_width, = delta_vec.shape
+        delta_matrix = delta_vec.reshape((delta_width, 1))
+        delta_ker = np.stack([delta_matrix for i in range(num_pca)], axis=-1)
+        delta_ker = delta_ker.reshape(delta_ker.shape + (1,))
+        def delta_ker_init(shape, dtype=None):
+            assert delta_ker.shape == shape, (delta_ker.shape, shape)
+            return delta_ker
 
     return Sequential([
         Conv2D(
@@ -42,17 +48,19 @@ def build_model(pca_matrix, query_shape, delta=16):
             filters=num_pca,
             kernel_size=(pca_width, pca_height),
             kernel_initializer=pca_ker_init,
+            strides=stride,
             use_bias=False,
             padding="valid",
         ),
-        # Conv2D(
-        #     filters=1,
-        #     kernel_size=(delta_width, 1),
-        #     kernel_initializer=delta_ker_init,
-        #     use_bias=False,
-        #     padding="valid",
-        # ),
-    ])
+    ] + ([
+        Conv2D(
+            filters=1,
+            kernel_size=(delta_width, 1),
+            kernel_initializer=delta_ker_init,
+            use_bias=False,
+            padding="valid",
+        ),
+    ] if COMPUTE_DELTA else []))
 
 
 def run_model(model, queries_matrix, threshold=0):
@@ -64,22 +72,19 @@ def run_model(model, queries_matrix, threshold=0):
     """
     batch_size, query_width, query_height = queries_matrix.shape
 
-    conv_result = model.predict(
+    conv_result = np.squeeze(model.predict(
         queries_matrix.reshape((batch_size, 1, query_width, query_height)),
         batch_size=batch_size,
-    )
+    ))
 
-    return np.squeeze(conv_result)
-
-    assert conv_result.shape[:2] == (batch_size, 1), (conv_result.shape[:2], (batch_size, 1))
-    assert conv_result.shape[3:] == (1,), (conv_result.shape[3:], (1,))
-    conv_result = conv_result.reshape((batch_size, conv_result.shape[2]))
-
-    return np.where(conv_result > threshold, 1, 0)
+    if CAST_TO_BINARY:
+        conv_result = np.where(conv_result > threshold, 1, 0)
+    return conv_result
 
 
 if __name__ == "__main__":
     delta = 16
+    stride = 5
     num_pca = 64
     pca_time = 20
     pca_height = 121
@@ -90,7 +95,7 @@ if __name__ == "__main__":
     query_shape = (query_time, pca_height)
     queries_matrix = np.ones((batch_size, query_time, pca_height))
 
-    model = build_model(pca_matrix, query_shape, delta)
+    model = build_model(pca_matrix, query_shape, stride, delta)
     result = run_model(model, queries_matrix)
 
     assert result.shape[0] == batch_size
