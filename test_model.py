@@ -4,7 +4,7 @@ Code for testing model.py
 
 import numpy as np
 import scipy.io
-from scipy.stats import descrive
+from scipy.stats import describe
 from utils import *
 from model import *
 
@@ -40,9 +40,11 @@ fpseqs = run_model(conv_1d_net, pitch_shift_Qs)
 mat = scipy.io.loadmat('/data1/mint/public/taylorswift_out/db.mat', squeeze_me=True)
 expected_fpseqs = np.array([mat["beforeDeltas"][0][:,:,k] for k in range(9)])
 
-assert fpseqs.shape == expected_fpseqs.shape, (fpseqs.shape, expected_fpseqs.shape)
-print("""Got fpseqs: {}
-Expected fpseqs: {}""".format(
-    describe(fpseqs),
-    describe(expected_fpseqs)
-))
+# Run tests
+if __name__ == "__main__":
+    assert fpseqs.shape == expected_fpseqs.shape, (fpseqs.shape, expected_fpseqs.shape)
+    print("""Got fpseqs: {}
+    Expected fpseqs: {}""".format(
+        describe(fpseqs),
+        describe(expected_fpseqs)
+    ))
