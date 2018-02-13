@@ -1,6 +1,8 @@
 """
 Code for testing model.py
 """
+
+import numpy as np
 import scipy.io
 
 # Load eigenvectors
