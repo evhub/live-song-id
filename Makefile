@@ -1,6 +1,6 @@
 .PHONY: setup
 setup:
-	pip install -U keras scipy numpy librosa
+	pip install -U keras scipy numpy librosa tensorflow
 
 .PHONY: install
 install: build

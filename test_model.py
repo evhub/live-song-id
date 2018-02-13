@@ -4,8 +4,10 @@ Code for testing model.py
 
 import numpy as np
 import scipy.io
+from scipy.stats import descrive
 from utils import *
 from model import *
+
 # Load eigenvectors
 mat = scipy.io.loadmat('/data1/mint/public/taylorswift_out/model.mat', squeeze_me=True)
 evecs = mat['eigvecs'][::-1][:64]
@@ -36,7 +38,11 @@ fpseqs = run_model(conv_1d_net, pitch_shift_Qs)
 
 # Expected fpseqs
 mat = scipy.io.loadmat('/data1/mint/public/taylorswift_out/db.mat', squeeze_me=True)
-expected_fpseq = np.array([ mat["beforeDeltas"][0][:,:,k] for k in range(9)])
+expected_fpseqs = np.array([mat["beforeDeltas"][0][:,:,k] for k in range(9)])
 
-assert expected_fpseq.shape == fpseqs.shape
-print("expected_fpseq.shape == fpseqs.shape")
+assert fpseqs.shape == expected_fpseqs.shape, (fpseqs.shape, expected_fpseqs.shape)
+print("""Got fpseqs: {}
+Expected fpseqs: {}""".format(
+    describe(fpseqs),
+    describe(expected_fpseqs)
+))
