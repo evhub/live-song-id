@@ -3,7 +3,7 @@ setup:
 	pip install -U keras scipy numpy librosa tensorflow
 
 .PHONY: install
-install: build
+install: setup
 	pip install -e .
 
 .PHONY: clean
