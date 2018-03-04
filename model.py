@@ -8,11 +8,11 @@ from keras.layers import Conv2D
 
 
 # Determine how much processing should be done here.
-COMPUTE_DELTA = False
-CAST_TO_BINARY = False
+# COMPUTE_DELTA = False
+# CAST_TO_BINARY = False
 
 
-def build_model(pca_matrix, query_shape, stride=5, delta=16):
+def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False):
     """Generate the convolution model.
         pca_matrix: 3D array (each 2D subarray is a kernel)
         query_shape: tuple
@@ -68,7 +68,7 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16):
     ] if COMPUTE_DELTA else []))
 
 
-def run_model(model, queries_matrix, threshold=0):
+def run_model(model, queries_matrix, threshold=0, CAST_TO_BINARY=False):
     """Run the convolution model.
         model: result of build_model
         queries_matrix: 3D array (each 2D subarray is a query)
