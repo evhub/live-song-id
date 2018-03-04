@@ -8,11 +8,11 @@ from keras.layers import Conv2D
 
 
 # Determine how much processing should be done here.
-COMPUTE_DELTA = False
-CAST_TO_BINARY = False
+# COMPUTE_DELTA = False
+# CAST_TO_BINARY = False
 
 
-def build_model(pca_matrix, query_shape, stride=5, delta=16):
+def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False):
     """Generate the convolution model.
         pca_matrix: 3D array (each 2D subarray is a kernel)
         query_shape: tuple
@@ -36,8 +36,13 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16):
 
         delta_width, = delta_vec.shape
         delta_matrix = delta_vec.reshape((delta_width, 1))
-        delta_ker = np.stack([delta_matrix for i in range(num_pca)], axis=-1)
-        delta_ker = delta_ker.reshape(delta_ker.shape + (1,))
+
+        delta_temp = np.stack([np.zeros((delta+1, 1)) for i in range(64)], axis$
+        delta_ker = np.stack([delta_temp for i in range(64)], axis=-1)
+
+        for i in range(64):
+            delta_ker[:,:,i,i] = delta_matrix
+
         def delta_ker_init(shape, dtype=None):
             assert delta_ker.shape == shape, (delta_ker.shape, shape)
             return delta_ker
@@ -63,7 +68,7 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16):
     ] if COMPUTE_DELTA else []))
 
 
-def run_model(model, queries_matrix, threshold=0):
+def run_model(model, queries_matrix, threshold=0, CAST_TO_BINARY=False):
     """Run the convolution model.
         model: result of build_model
         queries_matrix: 3D array (each 2D subarray is a query)
@@ -78,7 +83,7 @@ def run_model(model, queries_matrix, threshold=0):
     ))
 
     if CAST_TO_BINARY:
-        conv_result = np.where(conv_result > threshold, 1, 0)
+        conv_result = np.where(conv_result < threshold, 1, 0)
     return conv_result
 
 
