@@ -59,7 +59,7 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False
         ),
     ] + ([
         Conv2D(
-            filters=1,
+            filters=num_pca,
             kernel_size=(delta_width, 1),
             kernel_initializer=delta_ker_init,
             use_bias=False,
