@@ -32,10 +32,10 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16, compute_delta=False
         delta_width, = delta_vec.shape
         delta_matrix = delta_vec.reshape((delta_width, 1))
 
-        delta_temp = np.stack([np.zeros((delta+1, 1)) for i in range(64)], axis=-1)
-        delta_ker = np.stack([delta_temp for i in range(64)], axis=-1)
+        delta_temp = np.stack([np.zeros((delta+1, 1)) for i in range(num_pca)], axis=-1)
+        delta_ker = np.stack([delta_temp for i in range(num_pca)], axis=-1)
 
-        for i in range(64):
+        for i in range(num_pca):
             delta_ker[:,:,i,i] = delta_matrix
 
         def delta_ker_init(shape, dtype=None):
