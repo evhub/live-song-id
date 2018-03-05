@@ -13,13 +13,16 @@ DB_DIR = os.path.join("/data1/mint/Data/", "artists")
 ARTISTS = (
     "taylorswift",
 )
+
+
 SONG_NAMES = {
-    "ourref1": ("ourquery1", "ourquery2"),
-    "ourref2": ("ourquery3", "ourquery4"),
+    'ourref' + '{0:02d}'.format(i + 1): ('ourquery' + '{0:02d}'.format(i + 1) + 'a', 'ourquery' + '{0:02d}'.format(i + 1) + 'b') for i in range(10)
 }
+
 BEAT_TIME = 1
 
 # Utilities
+
 def get_beats(artist, song_name):
     """Returns an array of beats and a list of their corresponding names."""
     base_name = os.path.join(DB_DIR, artist, "{}_{}".format(artist, song_name))
