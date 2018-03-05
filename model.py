@@ -7,12 +7,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D
 
 
-# Determine how much processing should be done here.
-# COMPUTE_DELTA = False
-# CAST_TO_BINARY = False
-
-
-def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False):
+def build_model(pca_matrix, query_shape, stride=5, delta=16, compute_delta=False):
     """Generate the convolution model.
         pca_matrix: 3D array (each 2D subarray is a kernel)
         query_shape: tuple
@@ -29,7 +24,7 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False
         assert pca_ker.shape == shape, (pca_ker.shape, shape)
         return pca_ker
 
-    if COMPUTE_DELTA:
+    if compute_delta:
         delta_vec = np.zeros(delta+1)
         delta_vec[0] = 1
         delta_vec[-1] = -1
@@ -65,10 +60,10 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16, COMPUTE_DELTA=False
             use_bias=False,
             padding="valid",
         ),
-    ] if COMPUTE_DELTA else []))
+    ] if compute_delta else []))
 
 
-def run_model(model, queries_matrix, threshold=0, CAST_TO_BINARY=False):
+def run_model(model, queries_matrix, threshold=0, cast_to_binary=False):
     """Run the convolution model.
         model: result of build_model
         queries_matrix: 3D array (each 2D subarray is a query)
@@ -82,7 +77,7 @@ def run_model(model, queries_matrix, threshold=0, CAST_TO_BINARY=False):
         batch_size=batch_size,
     ))
 
-    if CAST_TO_BINARY:
+    if cast_to_binary:
         conv_result = np.where(conv_result < threshold, 1, 0)
     return conv_result
 
