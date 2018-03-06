@@ -78,7 +78,7 @@ def run_model(model, queries_matrix, threshold=0, cast_to_binary=False):
     ))
 
     if cast_to_binary:
-        conv_result = np.where(conv_result < threshold, 1, 0)
+        conv_result = np.where(conv_result >= threshold, 1, 0)
     return conv_result
 
 
