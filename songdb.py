@@ -14,9 +14,9 @@ ARTISTS = (
     "taylorswift",
 )
 
-
+NUM_SONGS = 4
 SONG_NAMES = {
-    'ourref' + '{0:02d}'.format(i + 1): ('ourquery' + '{0:02d}'.format(i + 1) + 'a', 'ourquery' + '{0:02d}'.format(i + 1) + 'b') for i in range(10)
+    'ourref' + '{0:02d}'.format(i + 1): ('ourquery' + '{0:02d}'.format(i + 1) + 'a', 'ourquery' + '{0:02d}'.format(i + 1) + 'b') for i in range(NUM_SONGS)
 }
 
 BEAT_TIME = 1
@@ -39,8 +39,9 @@ def get_beats(artist, song_name):
         if start < 0:
             start = 0
         stop = start + beat_width
-        beat_array[i] = audio[start:stop]
-        beat_names.append(float(beat_name))
+        if len(audio) >= stop:
+            beat_array[i] = audio[start:stop]
+            beat_names.append(float(beat_name))
 
     return beat_array, beat_names
 
