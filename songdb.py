@@ -14,7 +14,7 @@ ARTISTS = (
     "taylorswift",
 )
 
-NUM_SONGS = 4
+NUM_SONGS = 10
 SONG_NAMES = {
     'ourref' + '{0:02d}'.format(i + 1): ('ourquery' + '{0:02d}'.format(i + 1) + 'a', 'ourquery' + '{0:02d}'.format(i + 1) + 'b') for i in range(NUM_SONGS)
 }
