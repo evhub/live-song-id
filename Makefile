@@ -1,10 +1,8 @@
 .PHONY: setup
 setup:
-	pip install -U keras scipy numpy librosa tensorflow
-
-.PHONY: install
-install: setup
-	pip install -e .
+	-cd ..; git clone https://github.com/evhub/song-annotation-db; cd live-song-id
+	pip install -e ../song-annotation-db
+	pip install keras scipy numpy librosa tensorflow
 
 .PHONY: clean
 clean:
