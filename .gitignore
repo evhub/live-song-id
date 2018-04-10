@@ -105,3 +105,6 @@ ENV/
 
 # Sublime
 *.sublime-*
+
+# Weights
+model.mat

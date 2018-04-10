@@ -6,8 +6,10 @@ keras.backend.set_image_data_format("channels_first")
 from keras.models import Sequential
 from keras.layers import Conv2D
 
+from kapre.utils import Normalization2D
 
-def build_model(pca_matrix, query_shape, stride=5, delta=16, compute_delta=False):
+
+def build_model(pca_matrix, query_shape, stride=5, delta=16, compute_delta=False, normalize=False):
     """Generate the convolution model.
         pca_matrix: 3D array (each 2D subarray is a kernel)
         query_shape: tuple
@@ -42,7 +44,9 @@ def build_model(pca_matrix, query_shape, stride=5, delta=16, compute_delta=False
             assert delta_ker.shape == shape, (delta_ker.shape, shape)
             return delta_ker
 
-    return Sequential([
+    return Sequential(([
+        Normalization2D(str_axis='freq'),
+    ] if normalize else []) + [
         Conv2D(
             input_shape=(1, query_width, query_height),
             filters=num_pca,
