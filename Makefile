@@ -2,7 +2,7 @@
 setup:
 	-cd ..; git clone https://github.com/evhub/song-annotation-db; cd live-song-id
 	pip install -e ../song-annotation-db
-	pip install keras scipy numpy librosa tensorflow kapre
+	pip install keras scipy numpy librosa tensorflow kapre pydot graphviz
 
 .PHONY: clean
 clean:

@@ -108,3 +108,6 @@ ENV/
 
 # Weights
 model.mat
+
+# Data
+paired_annotation_data/
