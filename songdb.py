@@ -9,7 +9,7 @@ import numpy as np
 from scipy.io import wavfile
 
 # Constants
-DB_DIR = os.path.join("/home/mirlab/Data/", "paired_annotation_data")
+DB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "song-annotation-db", "data")
 ARTISTS = (
     "taylorswift",
 )
